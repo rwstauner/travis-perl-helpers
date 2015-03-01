@@ -15,6 +15,9 @@ function setup-auto {
       command cpanm "$@"
     fi
   }
+  function find-blib-files {
+    find blib/arch/ blib/lib/auto/share -type f ! -empty
+  }
   if [ -e 'Build.PL' ]; then
     [ -n "$HELPERS_DEBUG" ] && echo "## overriding perl (Build.PL)" 1>&2
     function perl {
@@ -23,7 +26,7 @@ function setup-auto {
         coverage-setup
         ./Build || return $?
         local blib
-        if [ "$(find blib/arch/ -type f ! -empty)" == "" ]; then
+        if [ "$(find-blib-files)" == "" ]; then
           blib="-l"
         else
           blib="-b"
@@ -54,7 +57,7 @@ END
         coverage-setup
         command make
         local blib
-        if [ "$(find blib/arch/ -type f ! -empty)" == "" ]; then
+        if [ "$(find-blib-files)" == "" ]; then
           blib="-l"
         else
           blib="-b"
